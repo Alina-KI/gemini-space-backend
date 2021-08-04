@@ -10,8 +10,18 @@ export class UserController {
   constructor(private userService: UserService) {}
 
   @Post()
-  create(@Body() dto: CreateUserDto) {
-    return this.userService.create(dto);
+  registration(@Body() dto: CreateUserDto, password: string) {
+    return this.userService.registration(dto, password);
+  }
+
+  @Post()
+  login(@Body() dto: CreateUserDto) {
+    return this.userService.login(dto);
+  }
+
+  @Post()
+  logout(@Body() dto: CreateUserDto) {
+    return this.userService.logout(dto);
   }
 
   @Get()
