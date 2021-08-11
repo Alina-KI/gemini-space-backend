@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
 import { Model } from 'mongoose';
 import { Token, TokenDocument } from './schemas/token.schema';
 import { JwtService } from '@nestjs/jwt';
-import * as mongoose from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 
 @Injectable()
@@ -26,12 +26,11 @@ export class TokenService {
     userId: mongoose.Schema.Types.ObjectId,
     refreshToken: string,
   ) {
-    const tokenData = await this.tokenModel.findOne({ user: userId });
+    const tokenData = await this.tokenModel.findOne({ userId: userId });
     if (tokenData) {
       tokenData.refreshToken = refreshToken;
       return tokenData.save();
     }
-    const token = await this.tokenModel.create({ user: userId, refreshToken });
-    return token;
+    return this.tokenModel.create({ userId: userId, refreshToken });
   }
 }

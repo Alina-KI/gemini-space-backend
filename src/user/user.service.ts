@@ -13,14 +13,19 @@ export class UserService {
     private tokenService: TokenService,
   ) {}
 
-  async registration(dto: CreateUserDto, password: string) {
-    const hashPassword = await bcrypt.hash(password, 5);
+  async registration(dto: CreateUserDto, password: string | Buffer) {
+    const hashPassword = await bcrypt.hash(password, 3);
     // const activationLink = uuid.v4();
-    const tokens = await this.tokenService.generateToken({ ...dto });
-    await this.tokenService.saveToken(dto._id, tokens.refreshToken);
+    const user = await this.userModel.create({
+      ...dto,
+      password: hashPassword,
+    });
+    const payload = { userId: user._id, ...dto };
+    const tokens = await this.tokenService.generateToken(payload);
+    await this.tokenService.saveToken(user._id, tokens.refreshToken);
     return {
       ...tokens,
-      user: this.userModel.create({ ...dto, password: hashPassword }),
+      user: user,
     };
   }
 
