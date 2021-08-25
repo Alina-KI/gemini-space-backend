@@ -20,17 +20,17 @@ export class UserService {
 
   async registration(dto: CreateUserDto) {
     const { password, ...userInfo } = dto;
-    const isUser = await this.userModel.findOne({ email: dto.email });
+    const isUser = await this.userModel.findOne({ login: dto.login });
     if (!isUser) {
       const hashPassword = await bcrypt.hash(password, 10);
       // const activationLink = uuid.v4();
-      const user = await this.userModel.create({
+      await this.userModel.create({
         ...dto,
         password: hashPassword,
       });
-      const token = await this.tokenService.generateToken({ ...userInfo });
+      // const token = await this.tokenService.generateToken({ ...userInfo });
       // await this.tokenService.saveToken(user._id, tokens.refreshToken);
-      return { token: token, user: user };
+      return this.tokenService.generateToken({ ...userInfo });
     }
     throw new HttpException(
       'This user already exists!',
@@ -39,7 +39,7 @@ export class UserService {
   }
 
   async login(dto: CreateUserDto) {
-    const user = await this.userModel.findOne({ email: dto.email });
+    const user = await this.userModel.findOne({ login: dto.login });
     const { password, ...userInfo } = dto;
     const passwordEquals = await bcrypt.compare(password, user.password);
     if (user && passwordEquals) {
