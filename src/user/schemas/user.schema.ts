@@ -34,8 +34,8 @@ export class User {
   @Prop()
   town: string;
 
-  @Prop()
-  isActivated: boolean;
+  // @Prop()
+  // isActivated: boolean;
 
   // @Prop()
   // activationLink: string;
