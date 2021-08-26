@@ -34,6 +34,9 @@ export class User {
   @Prop()
   town: string;
 
+  @Prop()
+  friends: User[];
+
   // @Prop()
   // isActivated: boolean;
 

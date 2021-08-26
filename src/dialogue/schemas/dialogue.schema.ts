@@ -15,7 +15,7 @@ export class Dialogue {
   _idSender: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }] })
-  message: Message;
+  message: Message[];
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   users: User[];

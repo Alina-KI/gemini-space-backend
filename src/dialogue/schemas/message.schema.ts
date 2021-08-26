@@ -18,7 +18,7 @@ export class Message {
   file: string;
 
   @Prop()
-  date: Date;
+  date: string;
 
   @Prop()
   nameTalk: string;

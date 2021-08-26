@@ -4,7 +4,6 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { Get } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
-// import { response } from 'express';
 
 @Controller('/user')
 export class UserController {
