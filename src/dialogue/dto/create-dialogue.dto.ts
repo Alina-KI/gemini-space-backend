@@ -1,4 +1,4 @@
 export class CreateDialogueDto {
-  readonly _idSender;
+  // readonly _idSender;
   readonly nameTalk;
 }

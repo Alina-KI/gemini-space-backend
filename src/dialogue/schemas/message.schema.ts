@@ -21,7 +21,7 @@ export class Message {
   date: string;
 
   @Prop()
-  nameTalk: string;
+  _idDialogue: string;
 }
 
 export const MessageSchema = SchemaFactory.createForClass(Message);

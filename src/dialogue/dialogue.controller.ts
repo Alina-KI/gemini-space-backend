@@ -2,28 +2,29 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import { DialogueService } from './dialogue.service';
 import { CreateDialogueDto } from './dto/create-dialogue.dto';
+import { Message } from './schemas/message.schema';
 
 @Controller('/dialogues')
 export class DialogueController {
   constructor(private dialogueService: DialogueService) {}
 
   @Post('addDialogue')
-  create(@Body() dto: CreateDialogueDto) {
+  createDialogue(@Body() dto: CreateDialogueDto) {
     return this.dialogueService.createDialogue(dto);
   }
 
-  @Get('getAll')
-  getAll() {
-    return this.dialogueService.getAll();
-  }
-
   @Get(':id')
-  getOne(@Param('id') id: ObjectId) {
-    return this.dialogueService.getOne(id);
+  findDialogue(@Param('id') id: ObjectId) {
+    return this.dialogueService.findDialogue(id);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: ObjectId) {
-    return this.dialogueService.delete(id);
+  deleteDialogue(@Param('id') id: ObjectId) {
+    return this.dialogueService.deleteDialogue(id);
+  }
+
+  @Post('addMessage')
+  addMessage(@Body() message: Message) {
+    return this.dialogueService.addMessage(message);
   }
 }

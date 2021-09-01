@@ -10,11 +10,28 @@ export class MessageService {
     @InjectModel(Message.name) private messageModel: Model<MessageDocument>,
   ) {}
 
-  async addMessage(dto: CreateMessageDto): Promise<Message> {
+  async create(dto: CreateMessageDto): Promise<Message> {
     return this.messageModel.create({ ...dto, picture: '', file: '' });
   }
 
-  async changeMessage(id: ObjectId): Promise<Message> {
+  async changeMessage(id: ObjectId, changeText: string): Promise<Message> {
+    await this.messageModel
+      .updateOne(
+        { _id: id },
+        {
+          $push: {
+            items: {
+              text: changeText,
+            },
+          },
+        },
+      )
+      .exec();
     return this.messageModel.findById(id);
+  }
+
+  async deleteMessage(id: ObjectId): Promise<ObjectId> {
+    const message = await this.messageModel.findByIdAndDelete(id);
+    return message._id;
   }
 }
