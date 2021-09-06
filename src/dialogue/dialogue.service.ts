@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Dialogue, DialogueDocument } from './schemas/dialogue.schema';
 import { CreateDialogueDto } from './dto/create-dialogue.dto';
-import { Message } from './schemas/message.schema';
+import { Message } from './dialogue.controller';
 
 @Injectable()
 export class DialogueService {
@@ -12,7 +12,7 @@ export class DialogueService {
   ) {}
 
   async createDialogue(dto: CreateDialogueDto): Promise<Dialogue> {
-    return this.dialogueModel.create({ ...dto, message: [], users: [] });
+    return this.dialogueModel.create({ ...dto, messages: [], users: [] });
   }
 
   async findDialogue(id: ObjectId): Promise<Dialogue[]> {
@@ -24,19 +24,44 @@ export class DialogueService {
     return dialogue._id;
   }
 
-  async addMessage(message: Message): Promise<Dialogue[]> {
+  async addMessage(message: Message, id: string): Promise<Dialogue[]> {
     await this.dialogueModel
-      .updateOne(
-        { _id: message._idDialogue },
-        {
-          $push: {
-            items: {
-              messages: message,
-            },
-          },
-        },
-      )
+      .updateOne({ _id: id }, { $push: { items: { messages: message } } })
       .exec();
-    return this.dialogueModel.find({ _id: message._idDialogue });
+    const dialogue = await this.dialogueModel.find({
+      _id: id,
+    });
+    // console.log(message);
+    // console.log(dialogue[0].messages);
+    dialogue[0].messages.push(message);
+    dialogue[0].markModified('messages');
+    dialogue[0].save();
+    return this.dialogueModel.find({ _id: id });
   }
+
+  // async changeMessage(
+  //   idDialogue: ObjectId,
+  //   idMessage: ObjectId,
+  //   changeText: string,
+  // ) {
+  //   const dialogue = await this.dialogueModel.find({ _id: idDialogue });
+  //   dialogue.messages
+  //     .updateOne(
+  //       { _id: idMessage },
+  //       {
+  //         $push: {
+  //           items: {
+  //             text: changeText,
+  //           },
+  //         },
+  //       },
+  //     )
+  //     .exec();
+  //   return this.dialogueModel.findById(idDialogue);
+  // }
+
+  // async deleteMessage(id: ObjectId): Promise<ObjectId> {
+  //   const message = await this.messageModel.findByIdAndDelete(id);
+  //   return message._id;
+  // }
 }

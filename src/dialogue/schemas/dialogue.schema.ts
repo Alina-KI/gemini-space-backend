@@ -1,5 +1,4 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Message } from './message.schema';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { User } from '../../user/schemas/user.schema';
@@ -14,14 +13,21 @@ export class Dialogue {
   @Prop()
   _idSender: string;
 
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Message' }] })
-  messages: Message[];
-
-  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  users: User[];
-
+  // @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Message' }] })
+  // messages: Message[];
+  // @Prop({ type: [{ Message: { type: mongoose.Types.ObjectId } }] })
+  // messages: Message[];
   @Prop()
-  _idRecipient: string[];
+  messages: {
+    _idSender: string;
+    text: string;
+    picture: string;
+    file: string;
+    data: string;
+  }[];
+
+  @Prop({ type: [{ User: mongoose.Types.ObjectId }] })
+  users: User[];
 }
 
 export const DialogueSchema = SchemaFactory.createForClass(Dialogue);

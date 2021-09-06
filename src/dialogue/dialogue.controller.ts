@@ -2,7 +2,14 @@ import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ObjectId } from 'mongoose';
 import { DialogueService } from './dialogue.service';
 import { CreateDialogueDto } from './dto/create-dialogue.dto';
-import { Message } from './schemas/message.schema';
+
+export type Message = {
+  _idSender: string;
+  text: string;
+  picture: string | null;
+  file: string | null;
+  data: string;
+};
 
 @Controller('/dialogues')
 export class DialogueController {
@@ -23,8 +30,18 @@ export class DialogueController {
     return this.dialogueService.deleteDialogue(id);
   }
 
-  @Post('addMessage')
-  addMessage(@Body() message: Message) {
-    return this.dialogueService.addMessage(message);
+  @Post('message/addMessage/:id')
+  addMessage(@Body() message: Message, id: string) {
+    return this.dialogueService.addMessage(message, id);
   }
+
+  // @Post('message/change/:id')
+  // changeMessage(@Param('id') id: ObjectId, changeText: string) {
+  //   return this.messageService.changeMessage(id, changeText);
+  // }
+  //
+  // @Delete('message/:id')
+  // deleteMessage(@Param('id') id: ObjectId) {
+  //   return this.messageService.deleteMessage(id);
+  // }
 }
