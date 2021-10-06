@@ -33,9 +33,9 @@ export class DialogueService {
     });
     // console.log(message);
     // console.log(dialogue[0].messages);
-    dialogue[0].messages.push(message);
-    dialogue[0].markModified('messages');
-    dialogue[0].save();
+    // dialogue[0].messages.push(message);
+    // dialogue[0].markModified('messages');
+    // dialogue[0].save();
     return this.dialogueModel.find({ _id: id });
   }
 

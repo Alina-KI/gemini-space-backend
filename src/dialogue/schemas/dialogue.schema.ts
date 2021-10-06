@@ -11,7 +11,7 @@ export class Dialogue {
   nameTalk: string;
 
   @Prop()
-  _idSender: string;
+  creatorId: string;
 
   // @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Message' }] })
   // messages: Message[];
@@ -19,11 +19,11 @@ export class Dialogue {
   // messages: Message[];
   @Prop()
   messages: {
-    _idSender: string;
+    senderId: string;
     text: string;
     picture: string;
     file: string;
-    data: string;
+    date: string;
   }[];
 
   @Prop({ type: [{ User: mongoose.Types.ObjectId }] })
