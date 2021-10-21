@@ -39,7 +39,7 @@ export class UserService {
   }
 
   async login(dto: CreateUserDto) {
-    const user = await this.userModel.findOne({ login: dto.login });
+    const user = await this.userModel.findOne({ email: dto.email });
     const { password, ...userInfo } = dto;
     const passwordEquals = await bcrypt.compare(password, user.password);
     if (user && passwordEquals) {
@@ -50,8 +50,9 @@ export class UserService {
     });
   }
 
-  async getAll() {
-    return this.userModel.find();
+  async IsRegistration(dto: CreateUserDto): Promise<boolean> {
+    const isUser = await this.userModel.findOne({ email: dto.email });
+    return !isUser;
   }
 
   async getOne(id: ObjectId) {

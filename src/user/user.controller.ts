@@ -26,9 +26,9 @@ export class UserController {
     return this.userService.login(dto);
   }
 
-  @Get('getAll')
-  getAll() {
-    return this.userService.getAll();
+  @Post('isRegistration')
+  getAll(@Body() dto: CreateUserDto) {
+    return this.userService.IsRegistration(dto);
   }
 
   @Get('getOne:id')
