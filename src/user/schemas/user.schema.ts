@@ -13,7 +13,7 @@ export class User {
   @Prop({ unique: true })
   login: string;
 
-  @Prop()
+  @Prop({ unique: true })
   email: string;
 
   @Prop()

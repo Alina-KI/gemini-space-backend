@@ -20,7 +20,7 @@ export class UserService {
 
   async registration(dto: CreateUserDto) {
     const { password, ...userInfo } = dto;
-    const isUser = await this.userModel.findOne({ login: dto.login });
+    const isUser = await this.userModel.findOne({ email: dto.email });
     if (!isUser) {
       const hashPassword = await bcrypt.hash(password, 10);
       // const activationLink = uuid.v4();
@@ -46,12 +46,8 @@ export class UserService {
       return this.tokenService.generateToken({ ...userInfo });
     }
     throw new UnauthorizedException({
-      message: 'Incorrect username or password',
+      message: 'Incorrect username, email or password!',
     });
-  }
-
-  async logout(dto: CreateUserDto): Promise<User> {
-    return this.userModel.create({ ...dto });
   }
 
   async getAll() {

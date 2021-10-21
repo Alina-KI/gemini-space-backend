@@ -26,11 +26,6 @@ export class UserController {
     return this.userService.login(dto);
   }
 
-  @Post('logout')
-  logout(@Body() dto: CreateUserDto) {
-    return this.userService.logout(dto);
-  }
-
   @Get('getAll')
   getAll() {
     return this.userService.getAll();
