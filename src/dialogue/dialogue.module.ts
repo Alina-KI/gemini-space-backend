@@ -3,6 +3,7 @@ import { DialogueController } from './dialogue.controller';
 import { DialogueService } from './dialogue.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Dialogue, DialogueSchema } from './schemas/dialogue.schema';
+import { EventsGateway } from './events.gateway';
 
 @Module({
   imports: [
@@ -11,6 +12,6 @@ import { Dialogue, DialogueSchema } from './schemas/dialogue.schema';
     ]),
   ],
   controllers: [DialogueController],
-  providers: [DialogueService],
+  providers: [DialogueService, EventsGateway],
 })
 export class DialogueModule {}
