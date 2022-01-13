@@ -8,9 +8,6 @@ import {
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Server } from "socket.io";
-import { InjectModel } from "@nestjs/mongoose";
-import { User, UserDocument } from "../user/schemas/user.schema";
-import { Model } from "mongoose";
 import { CreateUserDto } from "../user/dto/create-user.dto";
 import { UseGuards } from "@nestjs/common";
 import { WsJwtAuthGuard } from "./guards/ws-jwt-auth.guard";
@@ -21,11 +18,6 @@ import { WsJwtAuthGuard } from "./guards/ws-jwt-auth.guard";
   }
 })
 export class EventsGateway {
-  constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>
-  ) {
-  }
-
   @WebSocketServer()
   server: Server;
 
@@ -43,8 +35,8 @@ export class EventsGateway {
 
   @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage("sendMessage")
-  async sendMessage(@MessageBody() sender: CreateUserDto, sender: CreateUserDto, idDialogue: string, nameDialogue: string) {
-    const user = await this.userModel.findOne({ id: data.id })
+  async sendMessage(@MessageBody() sender: CreateUserDto, idDialogue: string, nameDialogue: string) {
+    const user = await this.userModel.findOne({ id: sender.id })
     if(user){
       const dialogue = user.dialogue.findOne({ id: idDialogue })
       if(dialogue){
