@@ -8,7 +8,6 @@ import {
 import { from, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { Server } from "socket.io";
-import { CreateUserDto } from "../user/dto/create-user.dto";
 import { UseGuards } from "@nestjs/common";
 import { WsJwtAuthGuard } from "./guards/ws-jwt-auth.guard";
 
@@ -35,17 +34,18 @@ export class EventsGateway {
 
   @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage("sendMessage")
-  async sendMessage(@MessageBody() sender: CreateUserDto, idDialogue: string, nameDialogue: string) {
-    const user = await this.userModel.findOne({ id: sender.id })
-    if(user){
-      const dialogue = user.dialogue.findOne({ id: idDialogue })
-      if(dialogue){
-
-      }
-      else{
-        dialogue.createDialogue()
-      }
-    }
+  async sendMessage(@MessageBody() data: {user: any}) {
+    console.log(data.user);
+    // const user = await this.userModel.findOne({ id: sender.id })
+    // if(user){
+    //   const dialogue = user.dialogue.findOne({ id: idDialogue })
+    //   if(dialogue){
+    //
+    //   }
+    //   else{
+    //     dialogue.createDialogue()
+    //   }
+    // }
   }
 
   @SubscribeMessage("receiveMessage")
