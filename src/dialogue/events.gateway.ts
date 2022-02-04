@@ -3,38 +3,38 @@ import {
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse
-} from "@nestjs/websockets";
-import { from, Observable } from "rxjs";
-import { map } from "rxjs/operators";
-import { Server } from "socket.io";
-import { UseGuards } from "@nestjs/common";
-import { WsJwtAuthGuard } from "./guards/ws-jwt-auth.guard";
+  WsResponse,
+} from '@nestjs/websockets';
+import { from, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Server } from 'socket.io';
+import { UseGuards } from '@nestjs/common';
+import { WsJwtAuthGuard } from './guards/ws-jwt-auth.guard';
 
 @WebSocketGateway({
   cors: {
-    origin: "*"
-  }
+    origin: '*',
+  },
 })
 export class EventsGateway {
   @WebSocketServer()
   server: Server;
 
-  @SubscribeMessage("events")
+  @SubscribeMessage('events')
   findAll(@MessageBody() data: any): Observable<WsResponse<number>> {
     return from([1, 2, 3]).pipe(
-      map((item) => ({ event: "events", data: item }))
+      map((item) => ({ event: 'events', data: item })),
     );
   }
 
-  @SubscribeMessage("identity")
+  @SubscribeMessage('identity')
   async identity(@MessageBody() data: number): Promise<number> {
     return data;
   }
 
   @UseGuards(WsJwtAuthGuard)
-  @SubscribeMessage("sendMessage")
-  async sendMessage(@MessageBody() data: {user: any}) {
+  @SubscribeMessage('sendMessage')
+  async sendMessage(@MessageBody() data: { user: any }) {
     console.log(data.user);
     // const user = await this.userModel.findOne({ id: sender.id })
     // if(user){
@@ -48,8 +48,6 @@ export class EventsGateway {
     // }
   }
 
-  @SubscribeMessage("receiveMessage")
-  async receiveMessage(@MessageBody() data: number) {
-
-  }
+  @SubscribeMessage('receiveMessage')
+  async receiveMessage(@MessageBody() data: number) {}
 }
