@@ -12,7 +12,6 @@ import { DialogueModule } from './dialogue/dialogue.module';
         useUnifiedTopology: true,
       },
     ),
-    UserModule,
     DialogueModule,
   ],
   controllers: [],

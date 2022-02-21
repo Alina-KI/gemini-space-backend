@@ -25,6 +25,6 @@ import { JwtModule, JwtSecretRequestType } from '@nestjs/jwt';
   ],
   controllers: [],
   providers: [TokenService],
-  exports: [TokenService],
+  exports: [TokenService, JwtModule],
 })
 export class TokenModule {}
