@@ -5,8 +5,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Dialogue, DialogueSchema } from './schemas/dialogue.schema';
 import { EventsGateway } from './events.gateway';
 import { WsJwtAuthGuard } from './guards/ws-jwt-auth.guard';
-import { JwtService } from '@nestjs/jwt';
 import { UserModule } from '../user/user.module';
+import { TokenModule } from '../user/token.module';
 
 @Module({
   imports: [
@@ -14,6 +14,7 @@ import { UserModule } from '../user/user.module';
       { name: Dialogue.name, schema: DialogueSchema },
     ]),
     UserModule,
+    TokenModule,
   ],
   controllers: [DialogueController],
   providers: [DialogueService, EventsGateway, WsJwtAuthGuard],
