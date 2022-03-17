@@ -59,6 +59,10 @@ export class UserService {
     return this.userModel.findById(id);
   }
 
+  async findOne(id: ObjectId) {
+    // return this.userModel.findOne({ id: id }).then(u => u.);
+  }
+
   async delete(id: ObjectId): Promise<ObjectId> {
     const user = await this.userModel.findByIdAndDelete(id);
     return user._id;

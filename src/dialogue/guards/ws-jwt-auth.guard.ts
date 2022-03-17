@@ -1,7 +1,8 @@
-import { CanActivate, Injectable } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { UserService } from '../../user/user.service';
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
+import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
 @Injectable()
 export class WsJwtAuthGuard implements CanActivate {
@@ -10,18 +11,21 @@ export class WsJwtAuthGuard implements CanActivate {
     private readonly jwt: JwtService,
   ) {}
 
-  canActivate(
+  async canActivate(
     context: any,
-  ): boolean | any | Promise<boolean | any> | Observable<boolean | any> {
-    const bearerToken =
-      context.args[0].handshake.headers.authorization.split(' ')[1];
+  ): Promise<
+    boolean | any | Promise<boolean | any> | Observable<boolean | any>
+  > {
+    const socket = context.args[0];
+    const bearerToken = socket.handshake.headers.authorization.split(' ')[1];
     try {
       const decodedToken = this.jwt.verify(bearerToken) as any;
-      context.switchToWs().getData().user = this.userService.getOne(
-        decodedToken.id,
-      );
+      console.log('ЧЕЛ', await this.userService.findOne(decodedToken.id));
+      (context.switchToHttp() as HttpArgumentsHost).getRequest().user =
+        await this.userService.findOne(decodedToken.id);
       return true;
-    } catch {
+    } catch (e) {
+      console.log('err in guard', e);
       return false;
     }
   }

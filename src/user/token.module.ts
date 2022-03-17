@@ -11,14 +11,15 @@ import { JwtModule, JwtSecretRequestType } from '@nestjs/jwt';
       // tokenOrPayload: string | Object | Buffer,
       // verifyOrSignOrOptions?: jwt.VerifyOptions | jwt.SignOptions, down (req...)
       secretOrKeyProvider: (requestType: JwtSecretRequestType) => {
-        switch (requestType) {
-          case JwtSecretRequestType.SIGN:
-            return 'privateKey';
-          case JwtSecretRequestType.VERIFY:
-            return 'publicKey';
-          default:
-            return 'secret';
-        }
+        // switch (requestType) {
+        //   case JwtSecretRequestType.SIGN:
+        //     return 'privateKey';
+        //   case JwtSecretRequestType.VERIFY:
+        //     return 'publicKey';
+        //   default:
+        //     return 'secret';
+        return 'secret';
+        // }
       },
       signOptions: { expiresIn: '360d' },
     }),
