@@ -10,13 +10,12 @@ export class Dialogue {
   @Prop()
   nameTalk: string;
 
-  @Prop()
-  creatorId: string;
+  @Prop({ type: { User: mongoose.Types.ObjectId, ref: 'User' } })
+  creator: User;
 
-  // @Prop({ type: [{ type: mongoose.Types.ObjectId, ref: 'Message' }] })
-  // messages: Message[];
-  // @Prop({ type: [{ Message: { type: mongoose.Types.ObjectId } }] })
-  // messages: Message[];
+  @Prop()
+  isForOnlyCreator: boolean;
+
   @Prop()
   messages: {
     senderId: string;
@@ -26,7 +25,7 @@ export class Dialogue {
     date: string;
   }[];
 
-  @Prop({ type: [{ User: mongoose.Types.ObjectId }] })
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   users: User[];
 }
 

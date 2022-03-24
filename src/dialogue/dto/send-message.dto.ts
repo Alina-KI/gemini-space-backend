@@ -1,5 +1,5 @@
 export class SendMessageDto {
-  readonly dialog: number;
-  readonly text;
-  readonly date;
+  readonly dialogId: string;
+  readonly text: string;
+  readonly date: string;
 }

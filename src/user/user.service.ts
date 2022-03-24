@@ -60,7 +60,7 @@ export class UserService {
   }
 
   async findOne(id: ObjectId) {
-    // return this.userModel.findOne({ id: id }).then(u => u.);
+    return this.userModel.findOne({ id: id });
   }
 
   async delete(id: ObjectId): Promise<ObjectId> {

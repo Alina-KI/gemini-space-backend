@@ -1,55 +1,92 @@
 import {
-  MessageBody,
-  OnGatewayConnection,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
-  WsResponse,
+  OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Server, Socket } from 'socket.io';
-import { Res, UseGuards } from '@nestjs/common';
-import { WsJwtAuthGuard } from './guards/ws-jwt-auth.guard';
+import { NotFoundException, UseGuards } from '@nestjs/common';
+import { WithUser, WsJwtAuthGuard } from './guards/ws-jwt-auth.guard';
 import { SendMessageDto } from './dto/send-message.dto';
+import { DialogueService } from './dialogue.service';
+import { CreateDialogueDto, CreateGroupDialogDto } from './dto/create-dialogue.dto'
 
 @WebSocketGateway({
   cors: {
     origin: '*',
   },
 })
-export class EventsGateway {
+export class EventsGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
+  sockets: { [userId: string]: WithUser<Socket> } = {};
+
+  constructor(private dialogueService: DialogueService) {}
+
+  getDialogName = (dialogId) => `dialog-${dialogId}`;
+
+  connectToDialog(client: Socket, dialogId: string) {
+    client.join(this.getDialogName(dialogId));
+  }
+
+  @UseGuards(WsJwtAuthGuard)
+  @SubscribeMessage('getDialog')
+  async getDialog(client: WithUser<Socket>, dialogId: string) {
+    const dialog = client.user.dialogue.find(
+      (dialog) => dialog._id === dialogId,
+    );
+    if (!dialog) {
+      throw new NotFoundException();
+    }
+    return dialog;
+  }
 
   @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('connectAllDialogs')
-  async connectAllDialogs(client: Socket) {
+  async connectAllDialogs(client: WithUser<Socket>) {
     console.log('connection');
-    client.join(`dialog-${(client as any).user.}`);
+    this.sockets[client.user._id] = client;
+    client.user.dialogue.forEach((dialog) =>
+      this.connectToDialog(client, dialog._id),
+    );
   }
 
-  // @SubscribeMessage('events')
-  // findAll(@MessageBody() data: any): Observable<WsResponse<number>> {
-  //   return from([1, 2, 3]).pipe(
-  //     map((item) => ({ event: 'events', data: item })),
-  //   );
-  // }
-  //
-  // @SubscribeMessage('identity')
-  // async identity(@MessageBody() data: number): Promise<number> {
-  //   return data;
-  // }
+  @UseGuards(WsJwtAuthGuard)
+  @SubscribeMessage('createDialog')
+  async createDialog(client: WithUser<Socket>, dto: CreateDialogueDto) {
+    const dialog = await this.dialogueService.createDialogue(dto, client.user);
+    this.connectToDialog(client, dialog._id);
+    this.connectToDialog(this.sockets[dto.anotherUserId], dialog._id);
+    return dialog;
+  }
+
+  @UseGuards(WsJwtAuthGuard)
+  @SubscribeMessage('createGroupDialog')
+  async createGroupDialog(client: WithUser<Socket>, dto: CreateGroupDialogDto) {
+    const dialog = await this.dialogueService.createDialogue(dto, client.user);
+    this.connectToDialog(client, dialog._id);
+    return dialog;
+  }
 
   @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('sendMessage')
-  async sendMessage(client, data: SendMessageDto) {
+  async sendMessage(client: WithUser<Socket>, data: SendMessageDto) {
     console.log('data', data);
     console.log('client', client.user);
-    // const dialogue = client.user.dialogue.findOne({ id: data.dialog });
-    // if (dialogue) {
-    // } else {
-    //   dialogue.createDialogue();
-    // }
+    const dialog = client.user.dialogue.find((d) => d.id === data.dialogId);
+    if (!dialog) {
+      throw new NotFoundException('Такого диалога нет');
+    }
+    const savedMessage = await this.dialogueService.addMessage(data);
+    this.server
+      .in(this.getDialogName(data.dialogId))
+      .emit('receiveMessage', { dialogId: dialog._id, savedMessage });
+  }
+
+  handleDisconnect(client: Socket) {
+    const userId = Object.keys(this.sockets).find(
+      (userId) => this.sockets[userId].id === client.id,
+    );
+    delete this.sockets[userId];
   }
 }

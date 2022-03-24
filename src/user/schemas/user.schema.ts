@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { Dialogue } from '../../dialogue/schemas/dialogue.schema';
+import { Dialogue, DialogueDocument } from "../../dialogue/schemas/dialogue.schema";
 
 export type UserDocument = User & Document;
 
@@ -34,7 +34,7 @@ export class User {
   @Prop()
   town: string;
 
-  @Prop()
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   friends: User[];
 
   // @Prop()
@@ -44,7 +44,7 @@ export class User {
   // activationLink: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Dialogue' }] })
-  dialogue: Dialogue[];
+  dialogue: DialogueDocument[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

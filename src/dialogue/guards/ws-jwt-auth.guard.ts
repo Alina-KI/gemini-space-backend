@@ -3,6 +3,11 @@ import { UserService } from '../../user/user.service';
 import { Observable } from 'rxjs';
 import { JwtService } from '@nestjs/jwt';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
+import { UserDocument } from '../../user/schemas/user.schema';
+
+export type WithUser<T> = T & {
+  user: UserDocument;
+};
 
 @Injectable()
 export class WsJwtAuthGuard implements CanActivate {
