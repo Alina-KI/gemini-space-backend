@@ -9,7 +9,10 @@ import { NotFoundException, UseGuards } from '@nestjs/common';
 import { WithUser, WsJwtAuthGuard } from './guards/ws-jwt-auth.guard';
 import { SendMessageDto } from './dto/send-message.dto';
 import { DialogueService } from './dialogue.service';
-import { CreateDialogueDto, CreateGroupDialogDto } from './dto/create-dialogue.dto'
+import {
+  CreateDialogueDto,
+  CreateGroupDialogDto,
+} from './dto/create-dialogue.dto';
 
 @WebSocketGateway({
   cors: {
