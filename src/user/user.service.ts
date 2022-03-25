@@ -1,9 +1,4 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { User, UserDocument } from './schemas/user.schema';
@@ -32,31 +27,32 @@ export class UserService {
       // await this.tokenService.saveToken(user._id, tokens.refreshToken);
       return this.tokenService.generateToken({ ...userInfo });
     }
-    throw new HttpException(
-      'This user already exists!',
-      HttpStatus.BAD_REQUEST,
-    );
+    throw new NotFoundException('This user already exists!');
   }
 
   async login(dto: CreateUserDto) {
-    const user = await this.userModel.findOne({ email: dto.email });
+    const user = await this.userModel.findOne({ login: dto.login });
     const { password, ...userInfo } = dto;
     const passwordEquals = await bcrypt.compare(password, user.password);
     if (user && passwordEquals) {
       return this.tokenService.generateToken({ ...userInfo });
     }
-    throw new UnauthorizedException({
-      message: 'Incorrect username, email or password!',
-    });
+    throw new NotFoundException('Incorrect username, email or password!');
   }
 
-  async IsRegistration(dto: CreateUserDto): Promise<boolean> {
+  async IsRegistred(dto: CreateUserDto): Promise<boolean> {
     const isUser = await this.userModel.findOne({ email: dto.email });
     return !isUser;
   }
 
-  async getOne(id: ObjectId) {
-    return this.userModel.findById(id);
+  async getOne(login: string) {
+    const user = await this.userModel.findOne({ login: login });
+    const { password, ...userInfo } = (user as any)._doc;
+    // console.dir();
+    if (user) {
+      return { ...userInfo };
+    }
+    throw new NotFoundException('This user does not exist');
   }
 
   async findOne(id: ObjectId) {

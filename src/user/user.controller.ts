@@ -27,13 +27,13 @@ export class UserController {
   }
 
   @Post('isRegistration')
-  getAll(@Body() dto: CreateUserDto) {
-    return this.userService.IsRegistration(dto);
+  isRegistered(@Body() dto: CreateUserDto) {
+    return this.userService.IsRegistred(dto);
   }
 
-  @Get('getOne:id')
-  getOne(@Param('id') id: ObjectId) {
-    return this.userService.getOne(id);
+  @Get('getOne/:login')
+  getOne(@Param('login') login: string) {
+    return this.userService.getOne(login);
   }
 
   @Delete('delete:id')
