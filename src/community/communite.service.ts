@@ -6,6 +6,7 @@ import { Model } from 'mongoose';
 @Injectable()
 export class CommunityService {
   constructor(
-    @InjectModel(Community.name) private userModel: Model<CommunityDocument>,
+    @InjectModel(Community.name)
+    private communityModel: Model<CommunityDocument>,
   ) {}
 }
