@@ -1,22 +1,22 @@
 export class CreateUserDto {
-  readonly name;
-  readonly surname;
-  readonly lastname;
-  readonly dateOfBirth;
-  readonly phone;
-  readonly town;
-  readonly login;
-  readonly email;
-  readonly password;
+  readonly name: string;
+  readonly surname: string;
+  readonly lastname: string;
+  readonly dateOfBirth: string;
+  readonly phone: string;
+  readonly town: string;
+  readonly login: string;
+  readonly email: string;
+  readonly password: string;
 }
 
 export class UserInfo {
-  readonly name;
-  readonly surname;
-  readonly lastname;
-  readonly dateOfBirth;
-  readonly phone;
-  readonly town;
-  readonly login;
-  readonly email;
+  readonly name: string;
+  readonly surname: string;
+  readonly lastname: string;
+  readonly dateOfBirth: string;
+  readonly phone: string;
+  readonly town: string;
+  readonly login: string;
+  readonly email: string;
 }

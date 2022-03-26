@@ -5,12 +5,14 @@ import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { TokenService } from './token.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private tokenService: TokenService,
+    private readonly jwt: JwtService,
   ) {}
 
   async registration(dto: CreateUserDto) {
@@ -62,5 +64,10 @@ export class UserService {
   async delete(id: ObjectId): Promise<ObjectId> {
     const user = await this.userModel.findByIdAndDelete(id);
     return user._id;
+  }
+
+  getUserByToken(token: string) {
+    const decodedToken = this.jwt.verify(token) as any;
+    return this.findOne(decodedToken.id);
   }
 }

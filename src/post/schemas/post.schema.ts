@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { User } from '../../user/schemas/user.schema';
 import { Community } from '../../community/schemas/community.schema';
+import { Comment } from '../../comment/schemas/comment.schema';
 
 export type PostDocument = Post & Document;
 
