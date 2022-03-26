@@ -20,8 +20,14 @@ export class Post {
   @Prop()
   datePublished: string;
 
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }] })
+  comments: Comment[];
+
   @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } })
   user: User;
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
+  likes: User[];
 
   @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'Community' } })
   community: Community;
