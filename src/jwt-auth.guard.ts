@@ -1,9 +1,13 @@
-import { CanActivate, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  createParamDecorator,
+  Injectable,
+  ExecutionContext,
+} from '@nestjs/common';
 import { UserService } from './user/user.service';
-import { ExecutionContext } from '@nestjs/common/interfaces/features/execution-context.interface';
 
 @Injectable()
-export class jwtAuthGuard implements CanActivate {
+export class JwtAuthGuard implements CanActivate {
   constructor(private userService: UserService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -17,3 +21,10 @@ export class jwtAuthGuard implements CanActivate {
     }
   }
 }
+
+export const User = createParamDecorator(
+  (data: unknown, ctx: ExecutionContext): any => {
+    const request = ctx.switchToHttp().getRequest();
+    return request.user;
+  },
+);

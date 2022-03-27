@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { ChangeCommentDto, CreateCommentDto } from './dto/create-comment.dto';
+import { UserDocument } from '../user/schemas/user.schema';
 
 @Injectable()
 export class CommentService {
@@ -20,28 +21,22 @@ export class CommentService {
   }
 
   async changeComment(id: string, dto: ChangeCommentDto) {
+    const comment = await this.commentModel.findOne({ _id: id });
+    comment.text = dto.text;
+    comment.datePublished = dto.datePublished;
+    comment.save();
+  }
+
+  async likeComment(id: string, user: UserDocument) {
     return this.commentModel
       .updateOne(
         { _id: id },
         {
           $push: {
-            items: [{ text: dto.text }, { datePublished: dto.datePublished }],
+            items: { likes: user },
           },
         },
       )
       .exec();
-  }
-
-  async likesComment(id: string, userId: string) {
-    // return this.commentModel
-    //   .updateOne(
-    //     { _id: id },
-    //     {
-    //       $push: {
-    //         items: {likes: },
-    //       },
-    //     },
-    //   )
-    //   .exec();
   }
 }
