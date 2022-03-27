@@ -46,7 +46,7 @@ export class DialogueService {
         { $push: { items: { messages: message } } },
       )
       .exec();
-    console.log('result', result);
+    // console.log('result', result);
 
     return message;
   }

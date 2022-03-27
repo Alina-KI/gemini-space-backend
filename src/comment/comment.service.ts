@@ -2,7 +2,7 @@ import { CommentDocument } from './schemas/comment.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { Model } from 'mongoose';
-import { CreateCommentDto } from './dto/create-comment.dto';
+import { ChangeCommentDto, CreateCommentDto } from './dto/create-comment.dto';
 
 @Injectable()
 export class CommentService {
@@ -11,11 +11,37 @@ export class CommentService {
   ) {}
 
   async createComment(dto: CreateCommentDto) {
-
-    return "";
+    return this.commentModel.create({ ...dto, likes: [] });
   }
 
-  async getOne(id: string) {
-    return this.commentModel.findOne({ _id: id });
+  async deleteComment(id: string) {
+    const comment = await this.commentModel.findByIdAndDelete(id);
+    return comment._id;
+  }
+
+  async changeComment(id: string, dto: ChangeCommentDto) {
+    return this.commentModel
+      .updateOne(
+        { _id: id },
+        {
+          $push: {
+            items: [{ text: dto.text }, { datePublished: dto.datePublished }],
+          },
+        },
+      )
+      .exec();
+  }
+
+  async likesComment(id: string, userId: string) {
+    // return this.commentModel
+    //   .updateOne(
+    //     { _id: id },
+    //     {
+    //       $push: {
+    //         items: {likes: },
+    //       },
+    //     },
+    //   )
+    //   .exec();
   }
 }

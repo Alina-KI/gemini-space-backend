@@ -1,7 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { Dialogue, DialogueDocument } from "../../dialogue/schemas/dialogue.schema";
+import { DialogueDocument } from '../../dialogue/schemas/dialogue.schema';
+import { Post } from '../../post/schemas/post.schema';
 
 export type UserDocument = User & Document;
 
@@ -45,6 +46,9 @@ export class User {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Dialogue' }] })
   dialogue: DialogueDocument[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }] })
+  posts: Post[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
