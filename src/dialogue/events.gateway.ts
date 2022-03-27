@@ -39,6 +39,7 @@ export class EventsGateway implements OnGatewayDisconnect {
       (dialog) => dialog._id === dialogId,
     );
     if (!dialog) {
+      console.log(dialogId);
       throw new NotFoundException();
     }
     return dialog;
