@@ -82,6 +82,10 @@ export class EventsGateway implements OnGatewayDisconnect {
       throw new NotFoundException('Такого диалога нет');
     }
     const savedMessage = await this.dialogueService.addMessage(data);
+    if (dialog.isForOnlyCreator) {
+      dialog.isForOnlyCreator = false;
+      dialog.save().then();
+    }
     this.server
       .in(this.getDialogName(data.dialogId))
       .emit('receiveMessage', { dialogId: dialog._id, savedMessage });

@@ -17,6 +17,9 @@ export class Dialogue {
   isForOnlyCreator: boolean;
 
   @Prop()
+  isGroup: boolean;
+
+  @Prop()
   messages: {
     senderId: string;
     text: string;

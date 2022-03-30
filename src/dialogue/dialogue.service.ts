@@ -21,12 +21,15 @@ export class DialogueService {
   ) {
     const users =
       'anotherUserId' in dto ? [user._id, dto.anotherUserId] : [user._id];
+    const isDialog = 'anotherUserId' in dto;
 
     return this.dialogueModel.create({
       nameTalk: dto.nameTalk,
       creator: user._id,
       users,
       messages: [],
+      isForOnlyCreator: isDialog,
+      isGroup: !isDialog,
     });
   }
 
