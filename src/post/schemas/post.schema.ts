@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose';
 import { User } from '../../user/schemas/user.schema';
 import { Community } from '../../community/schemas/community.schema';
 import { Comment } from '../../comment/schemas/comment.schema';
+import { MongooseArray } from '../../mongoose-array.types';
 
 export type PostDocument = Post & Document;
 
@@ -16,19 +17,19 @@ export class Post {
   text: string;
 
   @Prop()
-  files: string[];
+  files: MongooseArray<string>;
 
   @Prop()
   datePublished: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }] })
-  comments: Comment[];
+  comments: MongooseArray<Comment>;
 
   @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } })
   user: User;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  likes: User[];
+  likes: MongooseArray<User>;
 
   @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'Community' } })
   community: Community;

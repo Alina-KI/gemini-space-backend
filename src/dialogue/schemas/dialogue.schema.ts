@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { User } from '../../user/schemas/user.schema';
+import { MongooseArray } from '../../mongoose-array.types';
 
 export type DialogueDocument = Dialogue & Document;
 
@@ -20,16 +21,16 @@ export class Dialogue {
   isGroup: boolean;
 
   @Prop()
-  messages: {
+  messages: MongooseArray<{
     senderId: string;
     text: string;
     picture: string;
     file: string;
     date: string;
-  }[];
+  }>;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  users: User[];
+  users: MongooseArray<User>;
 }
 
 export const DialogueSchema = SchemaFactory.createForClass(Dialogue);

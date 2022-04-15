@@ -20,12 +20,17 @@ export class FriendsService {
   }
 
   async addToFriends(login: string, me: UserDocument) {
-    const user = await this.userModel.findOne({ login });
     me = await this.userModel.findOne({ login: me.login });
-    me.friends.push(user);
-    await me.save();
-    user.friends.push(me);
-    await user.save();
+    const user = await this.userModel.findOne({ login });
+
+    if (!me.friends.includes(user._id)) {
+      me.friends.push(user);
+      await me.save();
+      user.friends.push(me);
+      await user.save();
+    }
+    console.log('user', await this.userModel.findOne({ login }));
+    console.log('me', await this.userModel.findOne({ login: me.login }));
   }
 
   async removeFromFriends(login: string, me: UserDocument) {

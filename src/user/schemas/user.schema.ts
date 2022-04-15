@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { DialogueDocument } from '../../dialogue/schemas/dialogue.schema';
 import { Post } from '../../post/schemas/post.schema';
-import { MongooseArray } from '../../mongoose-array.types'
+import { MongooseArray } from '../../mongoose-array.types';
 
 export type UserDocument = User & Document;
 
@@ -46,10 +46,10 @@ export class User {
   // activationLink: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Dialogue' }] })
-  dialogue: DialogueDocument[];
+  dialogue: MongooseArray<DialogueDocument>;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }] })
-  posts: Post[];
+  posts: MongooseArray<Post>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
