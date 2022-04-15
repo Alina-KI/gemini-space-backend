@@ -20,7 +20,17 @@ export class Dialogue {
   @Prop()
   isGroup: boolean;
 
-  @Prop()
+  @Prop({
+    type: [
+      {
+        senderId: { type: String },
+        text: { type: String },
+        picture: { type: String },
+        file: { type: String },
+        date: { type: String },
+      },
+    ],
+  })
   messages: MongooseArray<{
     senderId: string;
     text: string;
