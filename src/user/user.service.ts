@@ -68,6 +68,6 @@ export class UserService {
 
   getUserByToken(token: string) {
     const decodedToken = this.jwt.verify(token) as any;
-    return this.findOne(decodedToken.id);
+    return this.userModel.findOne({ login: decodedToken.login });
   }
 }

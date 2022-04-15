@@ -2,8 +2,9 @@ import {
   CanActivate,
   createParamDecorator,
   Injectable,
-  ExecutionContext, Logger
-} from '@nestjs/common'
+  ExecutionContext,
+  Logger,
+} from '@nestjs/common';
 import { UserService } from './user/user.service';
 
 @Injectable()
