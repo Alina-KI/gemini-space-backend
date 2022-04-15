@@ -58,7 +58,10 @@ export class EventsGateway implements OnGatewayDisconnect {
   @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('createDialog')
   async createDialog(client: WithUser<Socket>, dto: CreateDialogueDto) {
-    const dialog = await this.dialogueService.createDialogue(dto, client.user);
+    const dialog = await this.dialogueService.getOrCreateDialogue(
+      dto,
+      client.user,
+    );
     this.connectToDialog(client, dialog._id);
     this.connectToDialog(this.sockets[dto.anotherUserId], dialog._id);
     return dialog;
@@ -67,7 +70,10 @@ export class EventsGateway implements OnGatewayDisconnect {
   @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('createGroupDialog')
   async createGroupDialog(client: WithUser<Socket>, dto: CreateGroupDialogDto) {
-    const dialog = await this.dialogueService.createDialogue(dto, client.user);
+    const dialog = await this.dialogueService.getOrCreateDialogue(
+      dto,
+      client.user,
+    );
     this.connectToDialog(client, dialog._id);
     return dialog;
   }

@@ -15,13 +15,29 @@ export class DialogueService {
     @InjectModel(Dialogue.name) private dialogueModel: Model<DialogueDocument>,
   ) {}
 
-  async createDialogue(
+  getUserDialogs(user: UserDocument) {
+    return user.dialogue.filter(
+      (dialog) =>
+        !dialog.isForOnlyCreator || dialog.creator.login === user.login,
+    );
+  }
+
+  async getOrCreateDialogue(
     dto: CreateDialogueDto | CreateGroupDialogDto,
     user: UserDocument,
   ) {
     const users =
       'anotherUserId' in dto ? [user._id, dto.anotherUserId] : [user._id];
     const isDialog = 'anotherUserId' in dto;
+
+    const existingDialog = await this.dialogueModel.findOne({
+      users,
+    });
+    if (existingDialog) {
+      existingDialog.isForOnlyCreator = false;
+      existingDialog.save();
+      return existingDialog;
+    }
 
     return this.dialogueModel.create({
       nameTalk: dto.nameTalk,

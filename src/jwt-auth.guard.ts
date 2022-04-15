@@ -2,8 +2,8 @@ import {
   CanActivate,
   createParamDecorator,
   Injectable,
-  ExecutionContext,
-} from '@nestjs/common';
+  ExecutionContext, Logger
+} from '@nestjs/common'
 import { UserService } from './user/user.service';
 
 @Injectable()
@@ -12,11 +12,13 @@ export class JwtAuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const req = context.switchToHttp().getRequest();
-    const token = req.headers.get('Authorization');
+    const token = req.headers['authorization'];
+    // console.dir(req.headers)
     try {
       (req as any).user = await this.userService.getUserByToken(token);
       return true;
     } catch (e) {
+      Logger.log(e);
       return false;
     }
   }

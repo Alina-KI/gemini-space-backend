@@ -3,6 +3,7 @@ import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { DialogueDocument } from '../../dialogue/schemas/dialogue.schema';
 import { Post } from '../../post/schemas/post.schema';
+import { MongooseArray } from '../../mongoose-array.types'
 
 export type UserDocument = User & Document;
 
@@ -36,7 +37,7 @@ export class User {
   town: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  friends: User[];
+  friends: MongooseArray<User>;
 
   // @Prop()
   // isActivated: boolean;
