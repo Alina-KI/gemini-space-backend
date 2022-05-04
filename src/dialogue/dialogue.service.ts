@@ -35,7 +35,7 @@ export class DialogueService {
     if (!dialog) {
       throw new NotFoundException();
     }
-    await dialog.populate('.messages.sender').execPopulate();
+    await dialog.populate(' messages.sender').execPopulate();
     return dialog;
   }
 
