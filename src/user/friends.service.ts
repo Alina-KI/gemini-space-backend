@@ -8,9 +8,7 @@ export class FriendsService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async getFriendsByLogin(login: string) {
-    // await this.userModel.updateMany({}, { $set: { friends: [] } });
     const user = await this.userModel.findOne({ login }).populate('friends');
-    console.log(user);
     return user.friends;
   }
 
@@ -29,8 +27,6 @@ export class FriendsService {
       user.friends.push(me);
       await user.save();
     }
-    console.log('user', await this.userModel.findOne({ login }));
-    console.log('me', await this.userModel.findOne({ login: me.login }));
   }
 
   async removeFromFriends(login: string, me: UserDocument) {

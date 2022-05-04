@@ -49,9 +49,8 @@ export class UserService {
 
   async getOne(login: string) {
     const user = await this.userModel.findOne({ login: login });
-    const { password, ...userInfo } = (user as any)._doc;
-    // console.dir();
     if (user) {
+      const { password, ...userInfo } = (user as any)._doc;
       return { ...userInfo };
     }
     throw new NotFoundException('This user does not exist');

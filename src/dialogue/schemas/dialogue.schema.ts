@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { User } from '../../user/schemas/user.schema';
+import { User, UserDocument } from '../../user/schemas/user.schema';
 import { MongooseArray } from '../../mongoose-array.types';
 
 export type DialogueDocument = Dialogue & Document;
@@ -23,7 +23,7 @@ export class Dialogue {
   @Prop({
     type: [
       {
-        senderId: { type: String },
+        sender: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         text: { type: String },
         picture: { type: String },
         file: { type: String },
@@ -32,7 +32,7 @@ export class Dialogue {
     ],
   })
   messages: MongooseArray<{
-    senderId: string;
+    sender: UserDocument;
     text: string;
     picture: string;
     file: string;

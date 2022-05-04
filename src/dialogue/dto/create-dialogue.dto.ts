@@ -1,6 +1,6 @@
 export class CreateDialogueDto {
-  readonly nameTalk: string;
-  readonly anotherUserId: string;
+  nameTalk: string;
+  readonly anotherUserLogin: string;
 }
 
 export class CreateGroupDialogDto {

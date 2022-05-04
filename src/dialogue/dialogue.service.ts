@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, ObjectId } from 'mongoose';
 import { Dialogue, DialogueDocument } from './schemas/dialogue.schema';
@@ -6,20 +6,37 @@ import {
   CreateDialogueDto,
   CreateGroupDialogDto,
 } from './dto/create-dialogue.dto';
-import { UserDocument } from '../user/schemas/user.schema';
+import { User, UserDocument } from '../user/schemas/user.schema';
 import { SendMessageDto } from './dto/send-message.dto';
 
 @Injectable()
 export class DialogueService {
   constructor(
     @InjectModel(Dialogue.name) private dialogueModel: Model<DialogueDocument>,
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  getUserDialogs(user: UserDocument) {
-    return user.dialogue.filter(
-      (dialog) =>
-        !dialog.isForOnlyCreator || dialog.creator.login === user.login,
-    );
+  async getUserDialogs(user: UserDocument) {
+    await user.populate('dialogue').execPopulate();
+    const dialogs = await user.dialogue.filter((dialog) => {
+      return !dialog.isForOnlyCreator || dialog.creator.login === user.login;
+    });
+
+    await Promise.all(dialogs.map((d) => d.populate('users').execPopulate()));
+
+    return dialogs;
+  }
+
+  async getDialog(me: UserDocument, dialogId: string) {
+    await me.populate('dialogue').execPopulate();
+    const dialog = me.dialogue.find(async (dialog) => {
+      return dialog._id.toString() === dialogId;
+    });
+    if (!dialog) {
+      throw new NotFoundException();
+    }
+    await dialog.populate('.messages.sender').execPopulate();
+    return dialog;
   }
 
   async getOrCreateDialogue(
@@ -27,8 +44,10 @@ export class DialogueService {
     user: UserDocument,
   ) {
     const users =
-      'anotherUserId' in dto ? [user._id, dto.anotherUserId] : [user._id];
-    const isDialog = 'anotherUserId' in dto;
+      'anotherUserLogin' in dto
+        ? [user, await this.userModel.findOne({ login: dto.anotherUserLogin })]
+        : [user];
+    const isDialog = 'anotherUserLogin' in dto;
 
     const existingDialog = await this.dialogueModel.findOne({
       users,
@@ -39,7 +58,7 @@ export class DialogueService {
       return existingDialog;
     }
 
-    return this.dialogueModel.create({
+    const createdDialog = await this.dialogueModel.create({
       nameTalk: dto.nameTalk,
       creator: user._id,
       users,
@@ -47,6 +66,13 @@ export class DialogueService {
       isForOnlyCreator: isDialog,
       isGroup: !isDialog,
     });
+
+    users.forEach((user) => {
+      user.dialogue.push({ _id: createdDialog._id });
+      user.save();
+    });
+    console.log('createdDialog', createdDialog);
+    return createdDialog;
   }
 
   async findDialogue(id: ObjectId): Promise<Dialogue[]> {
@@ -58,15 +84,17 @@ export class DialogueService {
     return dialogue._id;
   }
 
-  async addMessage(message: SendMessageDto) {
-    const result = await this.dialogueModel
-      .updateOne(
-        { _id: message.dialogId },
-        { $push: { items: { messages: message } } },
-      )
-      .exec();
-    // console.log('result', result);
-
-    return message;
+  async addMessage(
+    { dialogId, ...message }: SendMessageDto,
+    sender: UserDocument,
+  ) {
+    const dialog = await this.dialogueModel.findOne({ _id: dialogId });
+    dialog.messages.push({ ...message, sender });
+    await dialog.save();
+    dialog.populate('messages.sender').execPopulate();
+    const lastMessage = dialog.messages[dialog.messages.length - 1];
+    // (lastMessage as any).populate('sender').execPopulate();
+    console.log(lastMessage);
+    return lastMessage;
   }
 }

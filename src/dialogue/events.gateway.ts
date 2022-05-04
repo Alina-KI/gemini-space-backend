@@ -22,7 +22,7 @@ import {
 export class EventsGateway implements OnGatewayDisconnect {
   @WebSocketServer()
   server: Server;
-  sockets: { [userId: string]: WithUser<Socket> } = {};
+  sockets: { [userLogin: string]: WithUser<Socket> } = {};
 
   constructor(private dialogueService: DialogueService) {}
 
@@ -33,26 +33,13 @@ export class EventsGateway implements OnGatewayDisconnect {
   }
 
   @UseGuards(WsJwtAuthGuard)
-  @SubscribeMessage('getDialog')
-  async getDialog(client: WithUser<Socket>, dialogId: string) {
-    const dialog = client.user.dialogue.find(
-      (dialog) => dialog._id === dialogId,
-    );
-    if (!dialog) {
-      console.log(dialogId);
-      throw new NotFoundException();
-    }
-    return dialog;
-  }
-
-  @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('connectAllDialogs')
   async connectAllDialogs(client: WithUser<Socket>) {
     console.log('connection');
-    this.sockets[client.user._id] = client;
-    client.user.dialogue.forEach((dialog) =>
-      this.connectToDialog(client, dialog._id),
-    );
+    this.sockets[client.user.login] = client;
+    client.user.populate('dialogue').dialogue.forEach((dialog) => {
+      this.connectToDialog(client, dialog._id);
+    });
   }
 
   @UseGuards(WsJwtAuthGuard)
@@ -62,8 +49,14 @@ export class EventsGateway implements OnGatewayDisconnect {
       dto,
       client.user,
     );
+    // console.log('AAA');
+    // console.log(dialog);
+    // console.log('BBB');
+    // console.log(dialog);
     this.connectToDialog(client, dialog._id);
-    this.connectToDialog(this.sockets[dto.anotherUserId], dialog._id);
+    if (this.sockets[dto.anotherUserLogin]) {
+      this.connectToDialog(this.sockets[dto.anotherUserLogin], dialog._id);
+    }
     return dialog;
   }
 
@@ -81,13 +74,16 @@ export class EventsGateway implements OnGatewayDisconnect {
   @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('sendMessage')
   async sendMessage(client: WithUser<Socket>, data: SendMessageDto) {
-    console.log('data', data);
-    console.log('client', client.user);
-    const dialog = client.user.dialogue.find((d) => d.id === data.dialogId);
+    const dialog = client.user.dialogue.find(
+      (d) => d._id.toString() === data.dialogId,
+    );
     if (!dialog) {
       throw new NotFoundException('Такого диалога нет');
     }
-    const savedMessage = await this.dialogueService.addMessage(data);
+    const savedMessage = await this.dialogueService.addMessage(
+      data,
+      client.user,
+    );
     if (dialog.isForOnlyCreator) {
       dialog.isForOnlyCreator = false;
       dialog.save().then();
@@ -98,9 +94,9 @@ export class EventsGateway implements OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket) {
-    const userId = Object.keys(this.sockets).find(
-      (userId) => this.sockets[userId].id === client.id,
+    const userLogin = Object.keys(this.sockets).find(
+      (userLogin) => this.sockets[userLogin].id === client.id,
     );
-    delete this.sockets[userId];
+    delete this.sockets[userLogin];
   }
 }
