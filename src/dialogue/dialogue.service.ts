@@ -18,7 +18,8 @@ export class DialogueService {
 
   async getUserDialogs(user: UserDocument) {
     await user.populate('dialogue').execPopulate();
-    const dialogs = await user.dialogue.filter((dialog) => {
+    const dialogs = await user.dialogue.filter(async (dialog) => {
+      await dialog.populate('creator').execPopulate();
       return !dialog.isForOnlyCreator || dialog.creator.login === user.login;
     });
 
@@ -94,7 +95,7 @@ export class DialogueService {
     dialog.populate('messages.sender').execPopulate();
     const lastMessage = dialog.messages[dialog.messages.length - 1];
     // (lastMessage as any).populate('sender').execPopulate();
-    console.log(lastMessage);
+    // console.log(lastMessage);
     return lastMessage;
   }
 }
