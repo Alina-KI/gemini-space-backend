@@ -72,7 +72,6 @@ export class DialogueService {
       user.dialogue.push({ _id: createdDialog._id });
       user.save();
     });
-    console.log('createdDialog', createdDialog);
     return createdDialog;
   }
 
