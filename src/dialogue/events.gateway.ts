@@ -49,10 +49,6 @@ export class EventsGateway implements OnGatewayDisconnect {
       dto,
       client.user,
     );
-    // console.log('AAA');
-    // console.log(dialog);
-    // console.log('BBB');
-    // console.log(dialog);
     this.connectToDialog(client, dialog._id);
     if (this.sockets[dto.anotherUserLogin]) {
       this.connectToDialog(this.sockets[dto.anotherUserLogin], dialog._id);

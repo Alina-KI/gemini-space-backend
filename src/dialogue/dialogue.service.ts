@@ -20,6 +20,7 @@ export class DialogueService {
     await user.populate('dialogue').execPopulate();
     const dialogs = await user.dialogue.filter(async (dialog) => {
       await dialog.populate('creator').execPopulate();
+      await dialog.populate('messages').execPopulate();
       return !dialog.isForOnlyCreator || dialog.creator.login === user.login;
     });
 
