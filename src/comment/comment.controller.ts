@@ -16,6 +16,7 @@ import { UserDocument } from '../user/schemas/user.schema';
 export class CommentController {
   constructor(private commentService: CommentService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   createComment(@Body() dto: CreateCommentDto) {
     return this.commentService.createComment(dto);

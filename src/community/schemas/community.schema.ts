@@ -12,6 +12,9 @@ export class Community {
   @Prop()
   title: string;
 
+  @Prop()
+  description: string;
+
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   members: MongooseArray<User>;
 

@@ -4,6 +4,7 @@ import * as mongoose from 'mongoose';
 import { DialogueDocument } from '../../dialogue/schemas/dialogue.schema';
 import { Post } from '../../post/schemas/post.schema';
 import { MongooseArray } from '../../mongoose-array.types';
+import { Community } from '../../community/schemas/community.schema';
 
 export type UserDocument = User & Document;
 
@@ -50,6 +51,9 @@ export class User {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }] })
   posts: MongooseArray<Post>;
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Community' }] })
+  communities: MongooseArray<Community>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
