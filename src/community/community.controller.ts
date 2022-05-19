@@ -12,7 +12,7 @@ import { CreateCommunityDto } from './dto/create-community.dto';
 import { JwtAuthGuard, User } from '../jwt-auth.guard';
 import { UserDocument } from '../user/schemas/user.schema';
 
-@Controller('/user')
+@Controller('/community')
 export class CommunityController {
   constructor(private communityService: CommunityService) {}
 
