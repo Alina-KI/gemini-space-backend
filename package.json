@@ -27,6 +27,7 @@
     "@nestjs/mongoose": "^8.0.1",
     "@nestjs/platform-express": "^8.0.6",
     "@nestjs/platform-socket.io": "^8.0.6",
+    "@nestjs/serve-static": "^2.2.2",
     "@nestjs/websockets": "^8.0.6",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
@@ -37,7 +38,7 @@
     "mongoose": "^5.12.15",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.6.6",
+    "rxjs": "^7.5.5",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
@@ -48,6 +49,7 @@
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.11",
     "@types/jest": "^26.0.22",
+    "@types/multer": "^1.4.7",
     "@types/node": "^14.14.36",
     "@types/supertest": "^2.0.10",
     "@typescript-eslint/eslint-plugin": "^4.19.0",

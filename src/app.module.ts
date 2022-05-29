@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from './user/user.module';
 import { DialogueModule } from './dialogue/dialogue.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { DialogueModule } from './dialogue/dialogue.module';
       },
     ),
     DialogueModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [],
