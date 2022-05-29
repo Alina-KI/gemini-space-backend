@@ -54,6 +54,12 @@ export class User {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Community' }] })
   communities: MongooseArray<Community>;
+
+  @Prop([String])
+  imageFiles: MongooseArray<string>;
+
+  @Prop([String])
+  audioFiles: MongooseArray<string>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

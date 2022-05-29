@@ -1,25 +1,15 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { FileUpload } from 'graphql-upload';
-import * as path from 'path';
-import { createWriteStream } from 'fs';
-import { v4 } from 'uuid';
+import { Injectable } from '@nestjs/common';
+import { UserDocument } from '../user/schemas/user.schema';
 
 @Injectable()
 export class FilesService {
-  createFile(file: FileUpload): Promise<string> {
-    const extension = file.filename.split('.').pop();
-    const filename = v4() + '.' + extension;
+  uploadImage(user: UserDocument, file: Express.Multer.File) {
+    user.imageFiles.push(file.filename);
+    return user.save();
+  }
 
-    const dest = path.resolve(__dirname, '..', '..', '..', 'uploads', filename);
-
-    return new Promise(async (resolve) =>
-      file
-        .createReadStream()
-        .pipe(createWriteStream(dest, { autoClose: true }))
-        .on('finish', () => resolve(filename))
-        .on('error', () => {
-          throw new InternalServerErrorException('Файл не смог загрузится');
-        }),
-    );
+  async uploadAudio(user: UserDocument, file: Express.Multer.File) {
+    user.audioFiles.push(file.filename);
+    return user.save();
   }
 }
