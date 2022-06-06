@@ -34,9 +34,25 @@ export class FilesController {
   async uploadAudio(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @User() user: UserDocument,
+    title: string,
   ) {
     for (const file of files) {
-      await this.filesService.uploadAudio(user, file);
+      await this.filesService.uploadAudio(user, file, title);
+    }
+
+    return user;
+  }
+
+  @Post('upload/video')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(AnyFilesInterceptor())
+  async uploadVideo(
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @User() user: UserDocument,
+    title: string,
+  ) {
+    for (const file of files) {
+      await this.filesService.uploadVideo(user, file, title);
     }
 
     return user;

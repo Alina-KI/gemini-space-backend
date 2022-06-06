@@ -93,9 +93,6 @@ export class DialogueService {
     dialog.messages.push({ ...message, sender });
     await dialog.save();
     dialog.populate('messages.sender').execPopulate();
-    const lastMessage = dialog.messages[dialog.messages.length - 1];
-    // (lastMessage as any).populate('sender').execPopulate();
-    // console.log(lastMessage);
-    return lastMessage;
+    return dialog.messages[dialog.messages.length - 1];
   }
 }
