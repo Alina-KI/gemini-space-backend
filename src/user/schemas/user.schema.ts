@@ -37,6 +37,9 @@ export class User {
   @Prop()
   town: string;
 
+  @Prop()
+  avatar: string;
+
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   friends: MongooseArray<User>;
 

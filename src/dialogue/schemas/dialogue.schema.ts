@@ -41,6 +41,9 @@ export class Dialogue {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   users: MongooseArray<User>;
+
+  @Prop()
+  image: string;
 }
 
 export const DialogueSchema = SchemaFactory.createForClass(Dialogue);
