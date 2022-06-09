@@ -25,6 +25,16 @@ export class FilesController {
     return this.filesService.uploadImage(user, image);
   }
 
+  @Post('upload/avatar')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('avatar'))
+  uploadAvatar(
+    @UploadedFile() avatar: Express.Multer.File,
+    @User() user: UserDocument,
+  ) {
+    return this.filesService.uploadAvatar(user, avatar);
+  }
+
   @Post('upload/audio')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('audio'))

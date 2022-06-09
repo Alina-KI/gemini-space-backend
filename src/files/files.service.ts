@@ -9,6 +9,12 @@ export class FilesService {
     return file.filename;
   }
 
+  async uploadAvatar(user: UserDocument, file: Express.Multer.File) {
+    user.avatar = file.filename;
+    await user.save();
+    return file.filename;
+  }
+
   async uploadAudio(
     user: UserDocument,
     file: Express.Multer.File,
