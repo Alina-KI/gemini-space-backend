@@ -4,8 +4,9 @@ import { UserDocument } from '../user/schemas/user.schema';
 @Injectable()
 export class FilesService {
   async uploadImage(user: UserDocument, file: Express.Multer.File) {
-    user.imageFiles.push({ path: file.filename });
-    return user.save();
+    user.imageFiles.push(file.filename);
+    await user.save();
+    return file.filename;
   }
 
   async uploadAudio(
@@ -14,7 +15,8 @@ export class FilesService {
     title: string,
   ) {
     user.audioFiles.push({ title, path: file.filename });
-    return user.save();
+    await user.save();
+    return file.filename;
   }
 
   async uploadVideo(
@@ -23,6 +25,7 @@ export class FilesService {
     title: string,
   ) {
     user.videoFiles.push({ title, path: file.filename });
-    return user.save();
+    await user.save();
+    return file.filename;
   }
 }

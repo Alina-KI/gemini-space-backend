@@ -67,6 +67,7 @@ export class DialogueService {
       messages: [],
       isForOnlyCreator: isDialog,
       isGroup: !isDialog,
+      image: dto.image,
     });
 
     users.forEach((user) => {
