@@ -4,15 +4,15 @@ import { UserDocument } from '../user/schemas/user.schema';
 @Injectable()
 export class FilesService {
   async uploadImage(user: UserDocument, file: Express.Multer.File) {
-    user.imageFiles.push(file.filename);
+    user.imageFiles.push(`http://localhost:5000/${file.filename}`);
     await user.save();
-    return file.filename;
+    return `http://localhost:5000/${file.filename}`;
   }
 
   async uploadAvatar(user: UserDocument, file: Express.Multer.File) {
-    user.avatar = file.filename;
+    user.avatar = `http://localhost:5000/${file.filename}`;
     await user.save();
-    return file.filename;
+    return `http://localhost:5000/${file.filename}`;
   }
 
   async uploadAudio(
@@ -22,7 +22,7 @@ export class FilesService {
   ) {
     user.audioFiles.push({ title, path: file.filename });
     await user.save();
-    return file.filename;
+    return `http://localhost:5000/${file.filename}`;
   }
 
   async uploadVideo(
@@ -32,6 +32,6 @@ export class FilesService {
   ) {
     user.videoFiles.push({ title, path: file.filename });
     await user.save();
-    return file.filename;
+    return `http://localhost:5000/${file.filename}`;
   }
 }
