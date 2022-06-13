@@ -52,8 +52,7 @@ export class FilesController {
   uploadVideo(
     @UploadedFile() video: Express.Multer.File,
     @User() user: UserDocument,
-    @Body('title') title: string,
   ) {
-    return this.filesService.uploadVideo(user, video, title);
+    return this.filesService.uploadVideo(user, video);
   }
 }

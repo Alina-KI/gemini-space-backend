@@ -28,16 +28,9 @@ export class FilesService {
     return { title, path: `http://localhost:5000/${file.filename}` };
   }
 
-  async uploadVideo(
-    user: UserDocument,
-    file: Express.Multer.File,
-    title: string,
-  ) {
-    user.videoFiles.push({
-      title,
-      path: `http://localhost:5000/${file.filename}`,
-    });
+  async uploadVideo(user: UserDocument, file: Express.Multer.File) {
+    user.videoFiles.push(`http://localhost:5000/${file.filename}`);
     await user.save();
-    return { title, path: `http://localhost:5000/${file.filename}` };
+    return `http://localhost:5000/${file.filename}`;
   }
 }

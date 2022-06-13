@@ -74,18 +74,8 @@ export class User {
     path: string;
   }>;
 
-  @Prop({
-    type: [
-      {
-        title: { type: String },
-        path: { type: String },
-      },
-    ],
-  })
-  videoFiles: MongooseArray<{
-    title: string;
-    path: string;
-  }>;
+  @Prop([String])
+  videoFiles: MongooseArray<string>;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
