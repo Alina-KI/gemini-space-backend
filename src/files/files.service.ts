@@ -20,9 +20,12 @@ export class FilesService {
     file: Express.Multer.File,
     title: string,
   ) {
-    user.audioFiles.push({ title, path: file.filename });
+    user.audioFiles.push({
+      title,
+      path: `http://localhost:5000/${file.filename}`,
+    });
     await user.save();
-    return `http://localhost:5000/${file.filename}`;
+    return { title, path: `http://localhost:5000/${file.filename}` };
   }
 
   async uploadVideo(
@@ -30,8 +33,11 @@ export class FilesService {
     file: Express.Multer.File,
     title: string,
   ) {
-    user.videoFiles.push({ title, path: file.filename });
+    user.videoFiles.push({
+      title,
+      path: `http://localhost:5000/${file.filename}`,
+    });
     await user.save();
-    return `http://localhost:5000/${file.filename}`;
+    return { title, path: `http://localhost:5000/${file.filename}` };
   }
 }

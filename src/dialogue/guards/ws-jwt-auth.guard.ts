@@ -25,7 +25,6 @@ export class WsJwtAuthGuard implements CanActivate {
         await this.userService.getUserByToken(bearerToken);
       return true;
     } catch (e) {
-      // console.log('err in guard', e);
       return false;
     }
   }

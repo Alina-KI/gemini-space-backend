@@ -1,8 +1,8 @@
 import {
+  Body,
   Controller,
   Post,
   UploadedFile,
-  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -15,7 +15,7 @@ import { UserDocument } from '../user/schemas/user.schema';
 export class FilesController {
   constructor(private filesService: FilesService) {}
 
-  @Post('upload/images')
+  @Post('upload/image')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image'))
   uploadImages(
@@ -39,9 +39,9 @@ export class FilesController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('audio'))
   uploadAudio(
-    @UploadedFiles() audio: Express.Multer.File,
+    @UploadedFile() audio: Express.Multer.File,
     @User() user: UserDocument,
-    title: string,
+    @Body('title') title: string,
   ) {
     return this.filesService.uploadAudio(user, audio, title);
   }
@@ -50,9 +50,9 @@ export class FilesController {
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('video'))
   uploadVideo(
-    @UploadedFiles() video: Express.Multer.File,
+    @UploadedFile() video: Express.Multer.File,
     @User() user: UserDocument,
-    title: string,
+    @Body('title') title: string,
   ) {
     return this.filesService.uploadVideo(user, video, title);
   }
