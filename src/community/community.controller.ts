@@ -33,4 +33,10 @@ export class CommunityController {
   getCommunities(@User() user: UserDocument) {
     return this.communityService.getCommunities(user);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/getNotCommunities')
+  getNotCommunities(@User() user: UserDocument) {
+    return this.communityService.getNotCommunities(user);
+  }
 }

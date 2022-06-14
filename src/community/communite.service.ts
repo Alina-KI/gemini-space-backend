@@ -25,4 +25,9 @@ export class CommunityService {
     await me.populate('communities').execPopulate();
     return me.communities;
   }
+
+  async getNotCommunities(me: UserDocument) {
+    await me.populate('communities').execPopulate();
+    return this.communityModel.find({ _id: { $nin: me.communities } });
+  }
 }
