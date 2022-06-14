@@ -4,7 +4,7 @@ import { UserController } from './user.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './schemas/user.schema';
 import { TokenModule } from './token.module';
-import { FriendsService } from './friends.service'
+import { FriendsService } from './friends.service';
 
 @Module({
   imports: [
