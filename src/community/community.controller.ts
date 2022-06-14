@@ -17,7 +17,7 @@ export class CommunityController {
   constructor(private communityService: CommunityService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post()
+  @Post('/create')
   createComment(@Body() dto: CreateCommunityDto) {
     return this.communityService.createCommunity(dto);
   }
