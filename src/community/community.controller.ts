@@ -18,8 +18,8 @@ export class CommunityController {
 
   @UseGuards(JwtAuthGuard)
   @Post('/create')
-  createComment(@Body() dto: CreateCommunityDto) {
-    return this.communityService.createCommunity(dto);
+  createComment(@Body() dto: CreateCommunityDto, @User() user: UserDocument) {
+    return this.communityService.createCommunity(dto, user);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -38,5 +38,12 @@ export class CommunityController {
   @Get('/getNotCommunities')
   getNotCommunities(@User() user: UserDocument) {
     return this.communityService.getNotCommunities(user);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/addedMember')
+  addedMember(@User() user: UserDocument, @Body() id: string) {
+    console.log(id);
+    return this.communityService.addedMember(user, id);
   }
 }

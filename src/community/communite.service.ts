@@ -12,8 +12,11 @@ export class CommunityService {
     private communityModel: Model<CommunityDocument>,
   ) {}
 
-  async createCommunity(dto: CreateCommunityDto) {
-    return this.communityModel.create({ ...dto });
+  async createCommunity(dto: CreateCommunityDto, user: UserDocument) {
+    const group = await this.communityModel.create({ ...dto, user });
+    user.communities.push(group);
+    user.save();
+    return group;
   }
 
   async deleteCommunity(id: string) {
@@ -29,5 +32,16 @@ export class CommunityService {
   async getNotCommunities(me: UserDocument) {
     await me.populate('communities').execPopulate();
     return this.communityModel.find({ _id: { $nin: me.communities } });
+  }
+
+  async addedMember(me: UserDocument, id: string) {
+    const community: CommunityDocument = await this.communityModel
+      .findOne({ _id: id })
+      .populate('members');
+    community.members.push(me);
+    community.save();
+    me.communities.push(community);
+    me.save();
+    return community;
   }
 }

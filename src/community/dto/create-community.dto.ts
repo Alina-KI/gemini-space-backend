@@ -4,5 +4,5 @@ export class CreateCommunityDto {
   title: string;
   description: string;
   creator: User;
-  image: string;
+  photo: string;
 }

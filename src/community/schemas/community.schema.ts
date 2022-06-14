@@ -23,6 +23,9 @@ export class Community {
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }] })
   posts: MongooseArray<Post>;
+
+  @Prop()
+  photo: string;
 }
 
 export const CommunitySchema = SchemaFactory.createForClass(Community);
