@@ -18,8 +18,8 @@ export class Community {
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
   members: MongooseArray<User>;
 
-  @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } })
-  creator: User;
+  @Prop()
+  creator: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }] })
   posts: MongooseArray<Post>;

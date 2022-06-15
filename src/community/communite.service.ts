@@ -13,7 +13,9 @@ export class CommunityService {
   ) {}
 
   async createCommunity(dto: CreateCommunityDto, user: UserDocument) {
-    const group = await this.communityModel.create({ ...dto, user });
+    dto.creator = user.login;
+    const group = await this.communityModel.create({ ...dto });
+    group.members.push(user);
     user.communities.push(group);
     user.save();
     return group;
