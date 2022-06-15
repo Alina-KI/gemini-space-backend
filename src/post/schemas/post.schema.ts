@@ -16,7 +16,7 @@ export class Post {
   @Prop()
   text: string;
 
-  @Prop()
+  @Prop([String])
   files: MongooseArray<string>;
 
   @Prop()
