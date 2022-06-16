@@ -18,11 +18,21 @@ export class FilesController {
   @Post('upload/image')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('image'))
-  uploadImages(
+  uploadImage(
     @UploadedFile() image: Express.Multer.File,
     @User() user: UserDocument,
   ) {
     return this.filesService.uploadImage(user, image);
+  }
+
+  @Post('upload/file')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @User() user: UserDocument,
+  ) {
+    return this.filesService.uploadFile(user, file);
   }
 
   @Post('upload/avatar')

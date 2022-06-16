@@ -5,6 +5,14 @@ import { UserDocument } from '../user/schemas/user.schema';
 export class FilesService {
   async uploadImage(user: UserDocument, file: Express.Multer.File) {
     user.imageFiles.push(`http://localhost:5000/${file.filename}`);
+    console.log(file);
+    await user.save();
+    console.log(user);
+    return `http://localhost:5000/${file.filename}`;
+  }
+
+  async uploadFile(user: UserDocument, file: Express.Multer.File) {
+    user.files.push(`http://localhost:5000/${file.filename}`);
     await user.save();
     return `http://localhost:5000/${file.filename}`;
   }

@@ -61,6 +61,9 @@ export class User {
   @Prop([String])
   imageFiles: MongooseArray<string>;
 
+  @Prop([String])
+  files: MongooseArray<string>;
+
   @Prop({
     type: [
       {
