@@ -1,9 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { User } from '../../user/schemas/user.schema';
-import { Community } from '../../community/schemas/community.schema';
-import { Comment } from '../../comment/schemas/comment.schema';
+import { UserDocument } from '../../user/schemas/user.schema';
+import { CommentDocument } from '../../comment/schemas/comment.schema';
 import { MongooseArray } from '../../mongoose-array.types';
 
 export type PostDocument = Post & Document;
@@ -23,16 +22,13 @@ export class Post {
   datePublished: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }] })
-  comments: MongooseArray<Comment>;
+  comments: MongooseArray<CommentDocument>;
 
-  @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'User' } })
-  user: User;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  user: UserDocument;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  likes: MongooseArray<User>;
-
-  @Prop({ type: { type: mongoose.Schema.Types.ObjectId, ref: 'Community' } })
-  community: Community;
+  likes: MongooseArray<UserDocument>;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

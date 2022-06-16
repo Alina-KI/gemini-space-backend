@@ -2,9 +2,9 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { DialogueDocument } from '../../dialogue/schemas/dialogue.schema';
-import { Post } from '../../post/schemas/post.schema';
+import { PostDocument } from '../../post/schemas/post.schema';
 import { MongooseArray } from '../../mongoose-array.types';
-import { Community } from '../../community/schemas/community.schema';
+import { CommunityDocument } from '../../community/schemas/community.schema';
 
 export type UserDocument = User & Document;
 
@@ -41,7 +41,7 @@ export class User {
   avatar: string;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  friends: MongooseArray<User>;
+  friends: MongooseArray<UserDocument>;
 
   // @Prop()
   // isActivated: boolean;
@@ -53,10 +53,10 @@ export class User {
   dialogue: MongooseArray<DialogueDocument>;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }] })
-  posts: MongooseArray<Post>;
+  posts: MongooseArray<PostDocument>;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Community' }] })
-  communities: MongooseArray<Community>;
+  communities: MongooseArray<CommunityDocument>;
 
   @Prop([String])
   imageFiles: MongooseArray<string>;

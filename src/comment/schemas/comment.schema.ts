@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
-import { User } from '../../user/schemas/user.schema';
+import { User, UserDocument } from '../../user/schemas/user.schema';
 import { MongooseArray } from '../../mongoose-array.types';
 
 export type CommentDocument = Comment & Document;
@@ -18,7 +18,7 @@ export class Comment {
   user: User;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  likes: MongooseArray<User>;
+  likes: MongooseArray<UserDocument>;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);

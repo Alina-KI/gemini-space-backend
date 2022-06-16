@@ -43,7 +43,6 @@ export class CommunityController {
   @UseGuards(JwtAuthGuard)
   @Post('/addedMember')
   addedMember(@User() user: UserDocument, @Body() id: string) {
-    console.log(id);
     return this.communityService.addedMember(user, id);
   }
 }

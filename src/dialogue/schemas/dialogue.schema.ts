@@ -40,7 +40,7 @@ export class Dialogue {
   }>;
 
   @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }] })
-  users: MongooseArray<User>;
+  users: MongooseArray<UserDocument>;
 
   @Prop()
   image: string;
