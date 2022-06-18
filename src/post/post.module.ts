@@ -8,12 +8,14 @@ import {
   Community,
   CommunitySchema,
 } from '../community/schemas/community.schema';
+import { User, UserSchema } from '../user/schemas/user.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: Post.name, schema: PostSchema },
       { name: Community.name, schema: CommunitySchema },
+      { name: User.name, schema: UserSchema },
     ]),
     UserModule,
   ],

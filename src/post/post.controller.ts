@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { PostService } from './post.service';
 import { JwtAuthGuard, User } from '../jwt-auth.guard';
 import { UserDocument } from '../user/schemas/user.schema';
-import { CreatePostDto } from './dto/create-post.dto';
+import { CreatePostDto, PostUserDto } from './dto/create-post.dto';
 import { ObjectId } from 'mongoose';
 
 @Controller('/post')
@@ -10,18 +10,24 @@ export class PostController {
   constructor(private postService: PostService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post('/create/:id')
-  createComment(
+  @Post('/community/create/:id')
+  createPostCommunity(
     @Body() dto: CreatePostDto,
     @User() user: UserDocument,
     @Param('id') id: ObjectId,
   ) {
-    return this.postService.createPost(dto, user, id);
+    return this.postService.createPostCommunity(dto, user, id);
   }
 
-  @Get('/getPosts/:id')
-  getPosts(@Param('id') id: ObjectId) {
-    return this.postService.getPosts(id);
+  @Get('/community/getPosts/:id')
+  getPostsCommunity(@Param('id') id: ObjectId) {
+    return this.postService.getPostsCommunity(id);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/user/create')
+  createPostUser(@Body() data: PostUserDto, @User() user: UserDocument) {
+    return this.postService.createPostUser(data, user);
   }
 
   @UseGuards(JwtAuthGuard)

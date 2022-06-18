@@ -2,8 +2,8 @@ import { Post, PostDocument } from './schemas/post.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Injectable } from '@nestjs/common';
 import { Model, ObjectId } from 'mongoose';
-import { UserDocument } from '../user/schemas/user.schema';
-import { CreatePostDto } from './dto/create-post.dto';
+import { User, UserDocument } from '../user/schemas/user.schema';
+import { CreatePostDto, PostUserDto } from './dto/create-post.dto';
 import {
   Community,
   CommunityDocument,
@@ -15,9 +15,15 @@ export class PostService {
     @InjectModel(Post.name) private postModel: Model<PostDocument>,
     @InjectModel(Community.name)
     private communityModel: Model<CommunityDocument>,
+    @InjectModel(User.name)
+    private userModel: Model<UserDocument>,
   ) {}
 
-  async createPost(dto: CreatePostDto, user: UserDocument, id: ObjectId) {
+  async createPostCommunity(
+    dto: CreatePostDto,
+    user: UserDocument,
+    id: ObjectId,
+  ) {
     const post = await this.postModel.create({ ...dto, user });
     const group = await this.communityModel
       .findOne({ _id: id })
@@ -27,7 +33,7 @@ export class PostService {
     return post;
   }
 
-  async getPosts(id: ObjectId) {
+  async getPostsCommunity(id: ObjectId) {
     const group = await this.communityModel.findOne({ _id: id });
     await group.populate('posts').execPopulate();
     return this.postModel
@@ -38,6 +44,16 @@ export class PostService {
       })
       .populate('likes')
       .populate('user');
+  }
+
+  async createPostUser(data: PostUserDto, user: UserDocument) {
+    const { login, text, title, datePublished } = { ...data };
+    const dto: CreatePostDto = { text, title, datePublished };
+    const post = await this.postModel.create({ ...dto, user });
+    const userPost = await this.userModel.findOne({ login }).populate('posts');
+    userPost.posts.push(post);
+    userPost.save();
+    return post;
   }
 
   async changeLikes(id: string, user: UserDocument) {
