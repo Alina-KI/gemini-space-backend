@@ -33,7 +33,7 @@ export class PostService {
     return post;
   }
 
-  async getPostsCommunity(id: ObjectId) {
+  async getPosts(id: ObjectId) {
     const group = await this.communityModel.findOne({ _id: id });
     await group.populate('posts').execPopulate();
     return this.postModel

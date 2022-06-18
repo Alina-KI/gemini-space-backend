@@ -19,9 +19,9 @@ export class PostController {
     return this.postService.createPostCommunity(dto, user, id);
   }
 
-  @Get('/community/getPosts/:id')
+  @Get('/getPosts/:id')
   getPostsCommunity(@Param('id') id: ObjectId) {
-    return this.postService.getPostsCommunity(id);
+    return this.postService.getPosts(id);
   }
 
   @UseGuards(JwtAuthGuard)
