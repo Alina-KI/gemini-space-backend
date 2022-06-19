@@ -60,8 +60,8 @@ export class PostService {
   }
 
   async createPostUser(data: PostUserDto, user: UserDocument) {
-    const { login, text, title, datePublished } = { ...data };
-    const dto: CreatePostDto = { text, title, datePublished };
+    const { login, text, title, datePublished, photo } = { ...data };
+    const dto: CreatePostDto = { text, title, datePublished, photo };
     const post = await this.postModel.create({ ...dto, user });
     const userPost = await this.userModel.findOne({ login }).populate('posts');
     userPost.posts.push(post);
