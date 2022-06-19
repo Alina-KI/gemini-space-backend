@@ -33,13 +33,26 @@ export class PostService {
     return post;
   }
 
-  async getPosts(id: ObjectId) {
+  async getPostsCommunity(id: ObjectId) {
     const group = await this.communityModel.findOne({ _id: id });
     await group.populate('posts').execPopulate();
     return this.postModel
       .find({
         _id: {
           $in: group.posts.map((p) => p._id),
+        },
+      })
+      .populate('likes')
+      .populate('user');
+  }
+
+  async getPostsUser(login: string) {
+    const user = await this.userModel.findOne({ login });
+    await user.populate('posts').execPopulate();
+    return this.postModel
+      .find({
+        _id: {
+          $in: user.posts.map((p) => p._id),
         },
       })
       .populate('likes')
