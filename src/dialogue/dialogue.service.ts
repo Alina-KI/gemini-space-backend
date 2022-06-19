@@ -23,9 +23,7 @@ export class DialogueService {
       await dialog.populate('messages').execPopulate();
       return !dialog.isForOnlyCreator || dialog.creator.login === user.login;
     });
-
     await Promise.all(dialogs.map((d) => d.populate('users').execPopulate()));
-
     return dialogs;
   }
 
@@ -37,7 +35,11 @@ export class DialogueService {
     if (!dialog) {
       throw new NotFoundException();
     }
-    await dialog.populate(' messages.sender').execPopulate();
+    await dialog
+      .populate('creator')
+      .populate('users')
+      .populate('messages.sender')
+      .execPopulate();
     return dialog;
   }
 
@@ -47,19 +49,25 @@ export class DialogueService {
   ) {
     const users =
       'anotherUserLogin' in dto
-        ? [user, await this.userModel.findOne({ login: dto.anotherUserLogin })]
+        ? [
+            user,
+            await this.userModel
+              .findOne({ login: dto.anotherUserLogin })
+              .populate('creator'),
+          ]
         : [user];
     const isDialog = 'anotherUserLogin' in dto;
 
-    const existingDialog = await this.dialogueModel.findOne({
-      users,
-    });
+    const existingDialog = await this.dialogueModel
+      .findOne({
+        users,
+      })
+      .populate('creator');
     if (existingDialog) {
       existingDialog.isForOnlyCreator = false;
       existingDialog.save();
       return existingDialog;
     }
-
     const createdDialog = await this.dialogueModel.create({
       nameTalk: dto.nameTalk,
       creator: user._id,
@@ -77,8 +85,23 @@ export class DialogueService {
     return createdDialog;
   }
 
+  async getUserDialog(me: UserDocument, dialogId: string): Promise<User> {
+    const dialog = await this.dialogueModel
+      .findOne({ _id: dialogId })
+      .populate('creator')
+      .populate('messages')
+      .populate('users')
+      .populate('messages.sender');
+    return await dialog.users.find((user) => user.login !== me.login);
+  }
+
   async findDialogue(id: ObjectId): Promise<Dialogue[]> {
-    return this.dialogueModel.find({ _id: id });
+    return this.dialogueModel
+      .find({ _id: id })
+      .populate('creator')
+      .populate('users')
+      .populate('messages')
+      .populate('messages.sender');
   }
 
   async deleteDialogue(id: ObjectId): Promise<ObjectId> {
@@ -93,7 +116,11 @@ export class DialogueService {
     const dialog = await this.dialogueModel.findOne({ _id: dialogId });
     dialog.messages.push({ ...message, sender });
     await dialog.save();
-    dialog.populate('messages.sender').execPopulate();
+    dialog
+      .populate('creator')
+      .populate('messages')
+      .populate('messages.sender')
+      .execPopulate();
     return dialog.messages[dialog.messages.length - 1];
   }
 }

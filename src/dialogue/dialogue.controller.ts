@@ -27,6 +27,15 @@ export class DialogueController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('/getUserDialog/:dialogId')
+  getUserDialog(
+    @User() user: UserDocument,
+    @Param('dialogId') dialogId: string,
+  ) {
+    return this.dialogueService.getUserDialog(user, dialogId);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   deleteDialogue(@Param('id') id: ObjectId) {
     return this.dialogueService.deleteDialogue(id);

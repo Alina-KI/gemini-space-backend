@@ -35,7 +35,7 @@ export class EventsGateway implements OnGatewayDisconnect {
   @UseGuards(WsJwtAuthGuard)
   @SubscribeMessage('connectAllDialogs')
   async connectAllDialogs(client: WithUser<Socket>) {
-    console.log('connection');
+    // console.log('connection');
     this.sockets[client.user.login] = client;
     client.user.populate('dialogue').dialogue.forEach((dialog) => {
       this.connectToDialog(client, dialog._id);
